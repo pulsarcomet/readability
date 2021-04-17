@@ -130,3 +130,9 @@ dmypy.json
 
 # pycharm
 .idea
+
+# VSC workspace
+*.code-workspace
+
+# MAC
+*.DS_Store
