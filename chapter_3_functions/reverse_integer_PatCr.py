@@ -1,4 +1,6 @@
 import math
+import unittest
+import typing
 
 """
 This function returns reversed signed integer of size 32 bits if possible, otherwise 0
@@ -18,29 +20,65 @@ Optional:
    reverse(range(1,4)) # ok
    reverse(range(1,4), 4, 5, 6) # error
    
-
 """
+class MyTestCase(unittest.TestCase):
+  
+    #before refactor
+    def test_bf_one_value(self):
+        assert reverse_integer(51) == 15
+
+    def test_bf_negative(self):
+        assert reverse_integer(-321) == -123
+    
+    def test_bf_valid_number(self):
+        assert reverse_integer(1463847412) == 2147483641
+    
+    def test_bf_not_valid_number(self):
+        assert reverse_integer(2147483658) == 0
+
+    # After refactor
+    def test_exception(self):
+      with self.assertRaises(Exception):
+         list(reverse_integers(range(1,4), 4, 5, 6 ))
+    
+    def test_range(self):
+       assert list(reverse_integers(range(1,30,10))) == [1, 11, 12]
+
+    def test_one_value(self):
+        assert list(reverse_integers(51)) == [15]
+    
+    def test_several_values(self):
+        assert list(reverse_integers(51, -321, 1463847412, 2147483658)) == [15, -123, 2147483641, 0]
+    
+    def test_no_values(self):
+        assert list(reverse_integers()) == [0]
+    
 
 def reverse_integers(*numbers, ignore_sign=True, max_int_size=31):
     """
     :type x: int
     :rtype: int
     """
-
+    iter_numbers = None
     if (numbers):
+        #print ('type of {}'.format(type(numbers)))
+        if (not isinstance(numbers[0], typing.Iterable)):
+            iter_numbers = iter(numbers)
+        elif (len(numbers) == 1):
+            iter_numbers = numbers[0]
+        else:
+            raise Exception('Incorrect parameters: generator and regular values cannot be input together')
 
-        reversed_int = []
-        for x in numbers:
+        for x in iter_numbers:
             s = math.copysign(1, x)
-            a    = float(str(abs(x))[::-1])
+            a= float(str(abs(x))[::-1])
             if 0 <= a < 2**max_int_size:
-                reversed_int.append( int(s*a) )
+                yield int(s*a)
             else:
-                reversed_int.append(0)
+                yield 0
         
-        return reversed_int
-    else:
-        return 0
+    else:    
+        yield 0
 
 
 def reverse_integer(x):
@@ -59,19 +97,8 @@ def reverse_integer(x):
 # tests
 if __name__ == '__main__':
 
-    # should work before refactor
-    #assert reverse_integer(51) == 15
-    #assert reverse_integer(-321) == -123
-    #assert reverse_integer(1463847412) == 2147483641
-    #assert reverse_integer(2147483658) == 0
+    unittest.main()
+    
+    
 
-    # should work after refactor:
-    print (reverse_integers(51))
-    assert list(reverse_integers(51)) == [15]
-    print (reverse_integers(51, -321, 1463847412, 2147483658))
-    assert list(reverse_integers(51, -321, 1463847412, 2147483658)) == [15, -123, 2147483641, 0]
-    assert reverse_integers() == 0
-    print (reverse_integers())
-    # optional
-    #assert list(reverse_integers(range(1,30,10))) == [1, 11, 12]
-
+    
