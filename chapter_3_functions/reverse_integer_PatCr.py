@@ -61,7 +61,6 @@ def reverse_integers(*numbers, ignore_sign=True, max_int_size=31):
     """
     iter_numbers = None
     if (numbers):
-        #print ('type of {}'.format(type(numbers)))
         if (not isinstance(numbers[0], typing.Iterable)):
             iter_numbers = iter(numbers)
         elif (len(numbers) == 1):
